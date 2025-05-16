@@ -1,37 +1,20 @@
 
 
+<!-- <p align="center"><h1 align="center">TrustGen </h1></p>
 
-<!-- <p align="center"><h1 align="center">TrustEval </h1></p>
 <p align="center">
-	<em>A modular and extensible toolkit for comprehensive trust evaluation of generative foundation models (GenFMs)</em>
+	<em>TrustGen: A Platform of Dynamic Benchmarking on the Trustworthiness of Generative Foundation Models</em>
 </p> -->
 <p align="center">
-    <img src="images/logo-banner1.png" align="center" width="100%">
+    <img src="images/trustgen-logo-banner.png" align="center" width="100%">
 </p>
 
 
-<p align="center">
-    <img src="https://img.shields.io/github/stars/nauyisu022/TrustEval-toolkit?style=flat-square&logo=GitHub&logoColor=white" alt="GitHub Repo stars">
-        <img src="https://img.shields.io/github/contributors/nauyisu022/TrustEval-toolkit?style=flat-square&logo=github&logoColor=white" alt="Contributors">
-    <img src="https://img.shields.io/github/issues/nauyisu022/TrustEval-toolkit?style=flat-square&logo=github&logoColor=white" alt="GitHub Issues">
-    <img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square&logo=Open-Source-Initiative&logoColor=white" alt="License: MIT">
-    <a href="https://trustgen.github.io/"><img src="https://img.shields.io/badge/Homepage-Website-0078D4?style=flat-square&logo=homepage&logoColor=white" alt="Homepage"></a>
-    <a href="https://trusteval-docs.readthedocs.io/en/latest/"><img src="https://img.shields.io/badge/Docs-Website-00ADD8?style=flat-square&logo=ReadMe&logoColor=white" alt="Documentation"></a>
-    <a href="https://www.youtube.com/watch?v=hpgo3EMOArw"><img src="https://img.shields.io/badge/Video_Tutorial-YouTube-red?style=flat-square&logo=YouTube&logoColor=white" alt="YouTube Tutorial"></a>
-    <a href="https://arxiv.org/abs/2502.14296"><img src="https://img.shields.io/badge/Paper-ArXiv-B31B1B?style=flat-square&logo=arXiv&logoColor=white" alt="Paper"></a>
-
-</p>
-
-
-
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=296BA7&center=true&vCenter=true&width=1000&height=152&lines=TrustEval%3A+A+Dynamic+Evaluation+Toolkit++on+Trustworthiness+of+GenFMs)](https://git.io/typing-svg)
 
 
 ## Video Tutorials
 
 Watch step-by-step tutorials on our YouTube channel:
-
-
 
 
 https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
@@ -45,9 +28,7 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
 - [📍 Overview](#-overview)
 - [👾 Features](#-features)
 - [🚀 Getting Started](#-getting-started)
-  - [⚙️ Installation](#️-installation)
-    - [**1. Clone the Repository**](#1-clone-the-repository)
-    - [**2. Set Up a Conda Environment**](#2-set-up-a-conda-environment)
+    - [**1. Set Up a Conda Environment**](#1-set-up-a-conda-environment)
     - [**3. Install Dependencies**](#3-install-dependencies)
   - [🤖 Usage](#-usage)
     - [**Configure API Keys**](#configure-api-keys)
@@ -72,9 +53,9 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
 
 ## 📍 Overview
 
-**TrustEval-toolkit** is a dynamic and comprehensive framework for evaluating the trustworthiness of Generative Foundation Models (GenFMs) across dimensions such as safety, fairness, robustness, privacy, and more.
+**Trustgen** is a dynamic and comprehensive framework for evaluating the trustworthiness of Generative Foundation Models (GenFMs) across dimensions such as safety, fairness, robustness, privacy, and more.
 
-![Overview](images/overview.png)
+![Overview](images/TrustGen_Overview.png)
 
 
 ## 👾 Features
@@ -89,26 +70,17 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
 
 ---
 
+> 📖 The documentation can be viewed directly with a browser at TrustGen/docs/html/index.html.
+
 ## 🚀 Getting Started
 
-### ⚙️ Installation
-
-To install the **TrustEval-toolkit**, follow these steps:
-
-#### **1. Clone the Repository**
-
-```bash
-git clone https://github.com/nauyisu022/TrustEval-toolkit.git
-cd TrustEval-toolkit
-```
-
-#### **2. Set Up a Conda Environment**
+#### **1. Set Up a Conda Environment**
 
 Create and activate a new environment with Python 3.10:
 
 ```bash
-conda create -n trusteval_env python=3.10
-conda activate trusteval_env
+conda create -n trustgen_env python=3.10
+conda activate trustgen_env
 ```
 
 #### **3. Install Dependencies**
