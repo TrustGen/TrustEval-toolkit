@@ -88,42 +88,76 @@ class LocalRequestHandler(RequestHandler):
         self.pipe = pipe
 
     def handle_request(self, request):
-        if request.model_name == "kolors":
-            image = self.pipe(
-                prompt=request.prompt,
-                negative_prompt="",
-                guidance_scale=5.0,
-                num_inference_steps=50,
-            ).images[0]
-        elif request.model_name == "HunyuanDiT":
-            image = self.pipe(request.prompt).images[0]
-        elif request.model_name == "sd-3.5-large":
-            image = self.pipe(
-                request.prompt,
-                num_inference_steps=28,
-                guidance_scale=3.5,
-            ).images[0]
-        elif request.model_name == 'sd-3.5-large-turbo':
-            image = self.pipe(
-                request.prompt,
-                num_inference_steps=4,
-                guidance_scale=0.0,
-            ).images[0]
-        elif request.model_name == 'cogView-3-plus':
-            image = self.pipe(
-                prompt=request.prompt,
-                guidance_scale=7.0,
-                num_images_per_prompt=1,
-                num_inference_steps=50,
-                width=1024,
-                height=1024,
-            ).images[0]
-        elif request.model_name == 'playground-v2.5':
-            image = self.pipe(prompt=request.prompt, num_inference_steps=50, guidance_scale=3).images[0]
+        image = None
+        try:
+            if request.model_name == "kolors":
+                image = self.pipe(
+                    prompt=request.prompt,
+                    negative_prompt="",
+                    guidance_scale=5.0,
+                    num_inference_steps=50,
+                ).images[0]
+            elif request.model_name == "HunyuanDiT":
+                image = self.pipe(request.prompt).images[0]
+            elif request.model_name == "sd-3.5-large":
+                image = self.pipe(
+                    request.prompt,
+                    num_inference_steps=28,
+                    guidance_scale=3.5,
+                ).images[0]
+            elif request.model_name == 'sd-3.5-large-turbo':
+                image = self.pipe(
+                    request.prompt,
+                    num_inference_steps=4,
+                    guidance_scale=0.0,
+                ).images[0]
+            elif request.model_name == 'cogView-3-plus':
+                image = self.pipe(
+                    prompt=request.prompt,
+                    guidance_scale=7.0,
+                    num_images_per_prompt=1,
+                    num_inference_steps=50,
+                    width=1024,
+                    height=1024,
+                ).images[0]
+            elif request.model_name == 'playground-v2.5':
+                image = self.pipe(prompt=request.prompt, num_inference_steps=50, guidance_scale=3).images[0]
+            elif request.model_name == 'stable-diffusion-xl-base-1.0':
+                image = self.pipe(
+                    prompt=request.prompt,
+                ).images[0]
+            elif request.model_name == 'stable-diffusion-3-medium':
+                image = self.pipe(
+                    prompt=request.prompt,
+                    num_inference_steps=28,
+                    guidance_scale=7.0,
+                ).images[0]
+            elif request.model_name == 'FLUX.1-dev':
+                image = self.pipe(
+                    prompt=request.prompt,
+                    height=1024,
+                    width=1024,
+                    guidance_scale=3.5,
+                    num_inference_steps=50,
+                    max_sequence_length=512,
+                ).images[0]
+            else:
+                print(f"Warning: Unsupported model name: {request.model_name}")
+                return None
+            
+            if image is None:
+                print(f"Warning: No image generated for prompt: {request.prompt}")
+                return None
+                
+        except Exception as e:
+            print(f"Error generating image: {e}")
+            print(f"Prompt: {request.prompt}")
+            return None
         
         save_folder = request.save_folder
         file_name = request.file_name
         if save_folder != '' and file_name != '':
             os.makedirs(save_folder, exist_ok=True)
-            image.save(os.path.join(save_folder, file_name))
+            if image is not None:
+                image.save(os.path.join(save_folder, file_name))
         return image

@@ -41,30 +41,100 @@ class ModelService:
     def _initialize_pipeline(self):
         if self.request_type == 't2i' and self.handler_type == 'local':
             if self.model_name == "HunyuanDiT":
-                return HunyuanDiTPipeline.from_pretrained(
+                pipe = HunyuanDiTPipeline.from_pretrained(
                     "Tencent-Hunyuan/HunyuanDiT-Diffusers", torch_dtype=torch.float16
                 )
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for HunyuanDiT")
+                pipe.enable_attention_slicing(1)
+                return pipe
             elif self.model_name == "kolors":
-                return KolorsPipeline.from_pretrained(
+                pipe = KolorsPipeline.from_pretrained(
                     "Kwai-Kolors/Kolors-diffusers", torch_dtype=torch.float16, variant="fp16"
                 )
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for Kolors")
+                pipe.enable_attention_slicing(1)
+                return pipe
             elif self.model_name == 'sd-3.5-large':
-                return StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large", torch_dtype=torch.bfloat16)
+                pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large", torch_dtype=torch.bfloat16)
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for SD 3.5 Large")
+                pipe.enable_attention_slicing(1)
+                return pipe
             elif self.model_name == 'sd-3.5-large-turbo':
-                return StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large-turbo", torch_dtype=torch.bfloat16)
+                pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large-turbo", torch_dtype=torch.bfloat16)
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for SD 3.5 Large Turbo")
+                pipe.enable_attention_slicing(1)
+                return pipe
+            elif self.model_name == 'stable-diffusion-xl-base-1.0':
+                pipe = DiffusionPipeline.from_pretrained(
+                        "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
+                ).to("cuda")
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for SDXL")
+                pipe.enable_attention_slicing(1)
+                return pipe
+            elif self.model_name == 'stable-diffusion-3-medium':
+                pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for SD 3 Medium")
+                pipe.enable_attention_slicing(1)
+                return pipe
             elif self.model_name == "cogView-3-plus":
                 pipe = CogView3PlusPipeline.from_pretrained("THUDM/CogView3-Plus-3B", torch_dtype=torch.float16)
                 # Enable it to reduce GPU memory usage
                 pipe.enable_model_cpu_offload()
                 pipe.vae.enable_slicing()
                 pipe.vae.enable_tiling()
+                # 额外加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for CogView3-Plus")
+                pipe.enable_attention_slicing(1)
                 return pipe
             elif self.model_name == "playground-v2.5":
-                return DiffusionPipeline.from_pretrained(
+                pipe = DiffusionPipeline.from_pretrained(
                     "playgroundai/playground-v2.5-1024px-aesthetic",
                     torch_dtype=torch.float16,
                     variant="fp16",
                 ).to("cuda")
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for Playground v2.5")
+                pipe.enable_attention_slicing(1)
+                return pipe
+            elif self.model_name == "FLUX.1-dev":
+                pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
+                # 加速优化
+                try:
+                    pipe.enable_xformers_memory_efficient_attention()
+                except:
+                    print("xformers not available for FLUX.1-dev")
+                pipe.enable_attention_slicing(1)
+                return pipe
         return None
 
     def _format_messages(self, conversation_history):

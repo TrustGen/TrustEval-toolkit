@@ -43,8 +43,15 @@ MODEL_NAME_MAPPINGS:
   qwq-32B: Qwen/QwQ-32B-Preview
   sd-3.5-large: sd-3.5-large
   sd-3.5-large-turbo: sd-3.5-large-turbo
+  stable-diffusion-3-medium: stable-diffusion-3-medium
+  stable-diffusion-xl-base-1.0: stable-diffusion-xl-base-1.0
+  FLUX.1-dev: FLUX.1-dev
   text-embedding-ada-002: text-embedding-ada-002
   yi-lightning: yi-lightning
+
+# API Keys Configuration (use environment variables)
+OPENAI:
+  OPENAI_API_KEY: ${OPENAI_API_KEY}
 
 local_openai_sdk_llms:
   meta-llama/Llama-2-13b-chat-hf: LOCAL
@@ -112,3 +119,6 @@ t2i_models:
   playgroundai/playground-v2.5-1024px-aesthetic: REPLICATE
   sd-3.5-large: LOCAL
   sd-3.5-large-turbo: LOCAL
+  stable-diffusion-3-medium: LOCAL
+  stable-diffusion-xl-base-1.0: LOCAL
+  FLUX.1-dev: LOCAL
