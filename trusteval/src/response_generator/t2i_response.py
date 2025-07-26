@@ -17,6 +17,7 @@ sys.path.append(project_root)
 def generate_images_local(prompts, output_paths, model_name=None):
     """
     Generates images based on prompts and saves them to corresponding output paths.
+    Uses multi-GPU concurrent processing for maximum throughput.
 
     Args:
         prompts (list): List of prompt strings for image generation.
@@ -25,42 +26,104 @@ def generate_images_local(prompts, output_paths, model_name=None):
     """
     assert len(prompts) == len(output_paths), "Length of prompts and output_paths must match."
 
-    service = ModelService(
-        request_type='t2i',
-        handler_type='local',
-        model_name=model_name,
-        config_path=os.path.join(project_root, 'src/config/config.yaml'),
-    )
-
-    # Initialize distributed environment using Accelerator
-    accelerator = Accelerator()
-    device = accelerator.device
-    service.pipe.to(device)
-
-    # Split prompts and output_paths between processes if distributed environment is initialized
-    if dist.is_initialized():
-        rank = dist.get_rank()
-        world_size = dist.get_world_size()
-
-        items_per_process = len(prompts) // world_size
-        start_idx = rank * items_per_process
-        end_idx = start_idx + items_per_process if rank != world_size - 1 else len(prompts)
-        items_for_this_rank = list(zip(prompts[start_idx:end_idx], output_paths[start_idx:end_idx]))
-    else:
-        items_for_this_rank = list(zip(prompts, output_paths))
-
-    # Process prompts with corresponding output paths
-    for _, (prompt, output_path) in enumerate(items_for_this_rank):
+    import torch
+    
+    num_gpus = torch.cuda.device_count()
+    if num_gpus == 0:
+        print("No GPUs available, falling back to CPU")
+        num_gpus = 1
+    
+    print(f"Using {num_gpus} GPU(s) for concurrent inference")
+    
+    def create_service_for_gpu(gpu_id):
+        if num_gpus > 1:
+            torch.cuda.set_device(gpu_id)
+        
+        service = ModelService(
+            request_type='t2i',
+            handler_type='local',
+            model_name=model_name,
+            config_path=os.path.join(project_root, 'src/config/config.yaml'),
+        )
+        
+        if num_gpus > 1:
+            device = f"cuda:{gpu_id}"
+            service.pipe.to(device)
+            print(f"Model loaded on GPU {gpu_id}")
+        
+        return service
+    
+    gpu_services = {}
+    for gpu_id in range(num_gpus):
+        try:
+            gpu_services[gpu_id] = create_service_for_gpu(gpu_id)
+        except Exception as e:
+            print(f"Failed to create service for GPU {gpu_id}: {e}")
+    
+    if not gpu_services:
+        print("Failed to create any GPU services, falling back to single GPU")
+        service = ModelService(
+            request_type='t2i',
+            handler_type='local',
+            model_name=model_name,
+            config_path=os.path.join(project_root, 'src/config/config.yaml'),
+        )
+        
+        for _, (prompt, output_path) in enumerate(zip(prompts, output_paths)):
+            if os.path.isfile(output_path):
+                print(f"Skipping generation because {output_path} already exists.")
+                continue
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            result = service.process(prompt)
+            if result is not None:
+                result.save(output_path)
+            else:
+                print(f"No image generated for prompt: {prompt}")
+        return
+    
+    def generate_image_gpu(args):
+        prompt, output_path, gpu_id = args
+        
         if os.path.isfile(output_path):
             print(f"Skipping generation because {output_path} already exists.")
-            continue
-        # Ensure directory for output path exists
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        result = service.process(prompt)
-        if result is not None:
-            result.save(output_path)
-        else:
-            print(f"No image generated for prompt: {prompt}")
+            return
+        
+        try:
+            if num_gpus > 1:
+                torch.cuda.set_device(gpu_id)
+            
+            service = gpu_services[gpu_id]
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            result = service.process(prompt)
+            if result is not None:
+                result.save(output_path)
+                print(f"✅ Generated image on GPU {gpu_id}: {output_path}")
+            else:
+                print(f"❌ No image generated for prompt: {prompt}")
+        except Exception as e:
+            print(f"❌ Error generating image on GPU {gpu_id} for prompt: '{prompt}' - {e}")
+    
+    tasks = []
+    for i, (prompt, output_path) in enumerate(zip(prompts, output_paths)):
+        gpu_id = i % len(gpu_services)
+        tasks.append((prompt, output_path, gpu_id))
+    
+    max_workers = min(len(gpu_services), len(prompts))
+    print(f"Starting concurrent generation with {max_workers} workers...")
+    
+    with tqdm(total=len(tasks), desc="Generating images", unit="image") as pbar:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(generate_image_gpu, task) for task in tasks]
+            
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f"Error in concurrent task: {e}")
+                finally:
+                    pbar.update(1)
+    
+    print(f"🎉 Completed generating {len(prompts)} images using {num_gpus} GPU(s)")
 
 
 def generate_image(prompt, output_path, service):
