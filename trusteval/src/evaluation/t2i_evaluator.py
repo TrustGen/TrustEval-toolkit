@@ -241,6 +241,10 @@ def judge_images(base_dir=None, aspect='truthfulness', handler_type='api', targe
 
     for data_path in aspect_dict[aspect]:
         for vlm in target_models:
+            if aspect == 'robustness':
+                handler_type = 'local'
+            else:
+                handler_type = 'api'
             print(f"Processing {data_path} with {vlm} using {handler_type}")
             process_data(aspect, data_path, vlm, handler_type)
 
@@ -338,8 +342,14 @@ def metric_generation(base_dir=None, aspect=None, target_models=[]):
             for item in tqdm(data, desc="Processing robustness metrics"):
                 for model in target_models:
                     judgement = item.get('judgement', {}).get(model, {})
-                    original_score = judgement.get('original_score')
-                    modified_score = judgement.get('modified_score')
+                    if judgement is None:
+                        print(f"Missing judgement for model {model} in item {item.get('id', 'unknown')}")
+                        continue
+                    if 'original_score' in judgement and 'modified_score' in judgement:
+                        original_score = judgement.get('original_score')
+                        modified_score = judgement.get('modified_score')
+                    else:
+                        print(f"Missing scores for model {model} in item {item.get('id', 'unknown')}")
                     if original_score is not None and modified_score is not None:
                         metrics_dict[model]['original_score_sum'] += original_score
                         metrics_dict[model]['modified_score_sum'] += modified_score
