@@ -62,10 +62,13 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
 
 - **Dynamic Dataset Generation**: Automatically generate datasets tailored for evaluation tasks.
 - **Multi-Model Compatibility**: Evaluate LLMs, VLMs, T2I models, and more.
+- **Local & API Model Support**: Run models locally or via API endpoints for maximum flexibility.
+- **Multi-GPU Acceleration**: Concurrent inference across multiple GPUs for 7-8x speed improvement.
+- **Advanced T2I Models**: Support for Stable Diffusion 3.5, FLUX.1-dev, HunyuanDiT, Kolors, and more.
+- **Performance Optimizations**: xformers memory efficiency, attention slicing, and optimized pipelines.
 - **Customizable Metrics**: Configure workflows with flexible metrics and evaluation methods.
 - **Metadata-Driven Pipelines**: Design and execute test cases efficiently using metadata.
 - **Comprehensive Dimensions**: Evaluate models across safety, fairness, robustness, privacy, and truthfulness.
-- **Optimized Inference**: Faster evaluations with optimized inference pipelines.
 - **Detailed Reports**: Generate interactive, easy-to-interpret evaluation reports.
 
 ---
@@ -85,17 +88,138 @@ conda activate trustgen_env
 
 #### **3. Install Dependencies**
 
-Install the package and its dependencies:
+**Basic Installation (API Models Only):**
+
+Install the package with basic dependencies for API-based models:
 
 ```bash
 pip install .
 ```
 
+**Full Installation (Including Local Models):**
 
+If you want to run **local Text-to-Image models** (such as Stable Diffusion, FLUX, HunyuanDiT, etc.), install with additional dependencies:
 
-### 🤖 Usage
+```bash
+pip install -e ".[local]"
+```
+
+This will install additional packages required for local model inference:
+- `diffusers==0.31.0` - Hugging Face Diffusers library for T2I models
+- `torch>=2.1.0` - PyTorch for deep learning
+- `transformers>=4.41.2` - Transformers library
+- `datasets>=2.15.0` - Dataset utilities
+- `accelerate==0.30.1` - Hardware acceleration utilities
+
+## 🤖 Supported Models
+
+TrustEval supports a comprehensive range of foundation models across different modalities and providers:
+
+**Recommended API Providers:** For API-based models, we recommend [OpenRouter](https://openrouter.ai/), [DeepInfra](https://deepinfra.com/), and [Replicate](https://replicate.com/) for reliable and cost-effective inference.
+
+### 📝 Large Language Models (LLMs)
+
+#### **OpenAI Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| GPT-4o | `gpt-4o` | Chat + Vision | OpenAI API |
+| GPT-4o Mini | `gpt-4o-mini` | Chat + Vision | OpenAI API |
+| GPT-3.5 Turbo | `gpt-3.5-turbo` | Chat | OpenAI API |
+| o1 | `o1` | Reasoning | OpenAI API |
+| o1 Mini | `o1-mini` | Reasoning | OpenAI API |
+| o1 Preview | `o1-preview` | Reasoning | OpenAI API |
+
+#### **Anthropic Claude Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| Claude 3.5 Sonnet | `claude-3.5-sonnet` | Chat + Vision | Anthropic API |
+| Claude 3 Haiku | `claude-3-haiku` | Chat + Vision | Anthropic API |
+| Claude 3 Opus | `claude-3-opus` | Chat | Anthropic API |
+
+#### **Meta LLaMA Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| LLaMA 2 13B | `llama-2-13B` | Chat | DeepInfra API / Local |
+| LLaMA 3 8B | `llama-3-8B` | Chat | DeepInfra API |
+| LLaMA 3 70B | `llama-3-70B` | Chat | DeepInfra API |
+| LLaMA 3.1 8B | `llama-3.1-8B` | Chat | DeepInfra API |
+| LLaMA 3.1 70B | `llama-3.1-70B` | Chat | DeepInfra API |
+| LLaMA 3.2 11B Vision | `llama-3.2-11B-V` | Chat + Vision | DeepInfra API |
+| LLaMA 3.2 90B Vision | `llama-3.2-90B-V` | Chat + Vision | DeepInfra API |
+
+#### **Chinese Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| GLM-4 | `glm-4` | Chat | Zhipu API |
+| GLM-4 Plus | `glm-4-plus` | Chat | Zhipu API |
+| GLM-4V | `glm-4v` | Chat + Vision | Zhipu API |
+| GLM-4V Plus | `glm-4v-plus` | Chat + Vision | Zhipu API |
+| DeepSeek Chat | `deepseek-chat` | Chat | DeepSeek API |
+| Qwen 2.5 72B | `qwen-2.5-72B` | Chat | DeepInfra API |
+| QwQ 32B | `qwq-32B` | Reasoning | DeepInfra API |
+| Qwen VL Max | `qwen-vl-max-0809` | Chat + Vision | Qwen API |
+| Qwen 2 VL 72B | `qwen-2-vl-72B` | Chat + Vision | OpenRouter API |
+| Yi Lightning | `yi-lightning` | Chat | Yi API |
+
+#### **Google Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| Gemini 1.5 Flash | `gemini-1.5-flash` | Chat + Vision | Google API |
+| Gemini 1.5 Pro | `gemini-1.5-pro` | Chat + Vision | Google API |
+| Gemma 2 27B | `gemma-2-27B` | Chat | DeepInfra API |
+
+#### **Mistral Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| Mistral 7B | `mistral-7B` | Chat | DeepInfra API |
+| Mixtral 8x7B | `mistral-8x7B` | Chat | DeepInfra API |
+| Mixtral 8x22B | `mistral-8x22B` | Chat | DeepInfra API |
+
+#### **Other Models**
+| Model | Name | Type | Provider |
+|-------|------|------|----------|
+| Command R | `command-r` | Chat | Cohere API |
+| Command R Plus | `command-r-plus` | Chat | Cohere API |
+| InternLM 72B | `internLM-72B` | Chat + Vision | InternLM API |
+
+### 🎨 Text-to-Image Models (T2I)
+
+#### **Local T2I Models** (Requires `pip install -e ".[local]"`)
+| Model | Name |
+|-------|------|
+| **Stable Diffusion 3.5 Large** | `sd-3.5-large` |
+| **Stable Diffusion 3.5 Turbo** | `sd-3.5-large-turbo` |
+| **Stable Diffusion XL** | `stable-diffusion-xl-base-1.0` |
+| **Stable Diffusion 3 Medium** | `stable-diffusion-3-medium` |
+| **FLUX.1-dev** | `FLUX.1-dev` |
+| **HunyuanDiT** | `HunyuanDiT` |
+| **Kolors** | `kolors` |
+| **Playground v2.5** | `playground-v2.5` |
+
+#### **API T2I Models**
+| Model | Name | Provider |
+|-------|------|----------|
+| CogView3-Plus | `cogview-3-plus` | Zhipu API |
+| DALL-E 3 | `dalle3` | OpenAI API |
+| FLUX 1.1 Pro | `flux-1.1-pro` | Replicate API |
+| FLUX Schnell | `flux_schnell` | Replicate API |
+
+### 🔍 Embedding Models
+| Model | Name | Provider |
+|-------|------|----------|
+| Text Embedding Ada 002 | `text-embedding-ada-002` | OpenAI API |
+
+### 🚀 Performance Features
+
+- **Multi-GPU Support**: Automatic load balancing across 1-8 GPUs for local models
+- **Memory Optimization**: xformers attention, slicing, CPU offloading
+- **Concurrent Inference**: 7-8x speed improvement with multiple GPUs
+- **Auto-Detection**: Automatic hardware detection and optimization
+
+## 🤖 Usage
 
 #### **Configure API Keys**
+
 
 Run the configuration script to set up your API keys:
 
