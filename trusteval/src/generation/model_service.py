@@ -44,7 +44,6 @@ class ModelService:
                 pipe = HunyuanDiTPipeline.from_pretrained(
                     "Tencent-Hunyuan/HunyuanDiT-Diffusers", torch_dtype=torch.float16
                 )
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -55,7 +54,6 @@ class ModelService:
                 pipe = KolorsPipeline.from_pretrained(
                     "Kwai-Kolors/Kolors-diffusers", torch_dtype=torch.float16, variant="fp16"
                 )
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -64,7 +62,6 @@ class ModelService:
                 return pipe
             elif self.model_name == 'sd-3.5-large':
                 pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large", torch_dtype=torch.bfloat16)
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -73,7 +70,6 @@ class ModelService:
                 return pipe
             elif self.model_name == 'sd-3.5-large-turbo':
                 pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3.5-large-turbo", torch_dtype=torch.bfloat16)
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -84,7 +80,6 @@ class ModelService:
                 pipe = DiffusionPipeline.from_pretrained(
                         "stabilityai/stable-diffusion-xl-base-1.0", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
                 ).to("cuda")
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -93,7 +88,6 @@ class ModelService:
                 return pipe
             elif self.model_name == 'stable-diffusion-3-medium':
                 pipe = StableDiffusion3Pipeline.from_pretrained("stabilityai/stable-diffusion-3-medium-diffusers", torch_dtype=torch.float16)
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -106,7 +100,6 @@ class ModelService:
                 pipe.enable_model_cpu_offload()
                 pipe.vae.enable_slicing()
                 pipe.vae.enable_tiling()
-                # 额外加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -119,7 +112,6 @@ class ModelService:
                     torch_dtype=torch.float16,
                     variant="fp16",
                 ).to("cuda")
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
@@ -128,7 +120,6 @@ class ModelService:
                 return pipe
             elif self.model_name == "FLUX.1-dev":
                 pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
-                # 加速优化
                 try:
                     pipe.enable_xformers_memory_efficient_attention()
                 except:
