@@ -30,7 +30,21 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
 - [🚀 Getting Started](#-getting-started)
     - [**1. Set Up a Conda Environment**](#1-set-up-a-conda-environment)
     - [**3. Install Dependencies**](#3-install-dependencies)
-  - [🤖 Usage](#-usage)
+- [🤖 Supported Models](#-supported-models)
+  - [📝 Large Language Models (LLMs)](#-large-language-models-llms)
+    - [**OpenAI Models**](#openai-models)
+    - [**Anthropic Claude Models**](#anthropic-claude-models)
+    - [**Meta LLaMA Models**](#meta-llama-models)
+    - [**Chinese Models**](#chinese-models)
+    - [**Google Models**](#google-models)
+    - [**Mistral Models**](#mistral-models)
+    - [**Other Models**](#other-models)
+  - [🎨 Text-to-Image Models (T2I)](#-text-to-image-models-t2i)
+    - [**Local T2I Models** (Requires `pip install -e ".[local]"`)](#local-t2i-models-requires-pip-install--e-local)
+    - [**API T2I Models**](#api-t2i-models)
+  - [🔍 Embedding Models](#-embedding-models)
+  - [🚀 Performance Features](#-performance-features)
+- [🤖 Usage](#-usage)
     - [**Configure API Keys**](#configure-api-keys)
     - [**Quick Start**](#quick-start)
     - [**Step 0: Set Your Project Base Directory**](#step-0-set-your-project-base-directory)
@@ -39,6 +53,11 @@ https://github.com/user-attachments/assets/489501b9-69ae-467f-9be3-e4a02a7f9019
       - [**Step 3: Apply Contextual Variations**](#step-3-apply-contextual-variations)
       - [**Step 4: Generate Model Responses**](#step-4-generate-model-responses)
       - [**Step 5: Evaluate and Generate Reports**](#step-5-evaluate-and-generate-reports)
+    - [Using the Huggingface Dataset Download Script](#using-the-huggingface-dataset-download-script)
+      - [Basic Usage](#basic-usage)
+      - [Setting the base\_dir in Your Evaluation Script](#setting-the-base_dir-in-your-evaluation-script)
+      - [Next Steps in the Pipeline](#next-steps-in-the-pipeline)
+      - [Troubleshooting](#troubleshooting)
 - [Trustworthiness Report](#trustworthiness-report)
   - [Test Model Results](#test-model-results)
   - [Model Performance Summary](#model-performance-summary)
@@ -325,7 +344,40 @@ await generate_responses(
 
 Your `report.html` will be saved in the `base_dir` folder. For additional examples, check the `examples` folder.
 
+You're right, I missed the explanation about `base_dir`. Let me correct that part in the README:
 
+#### Using the Huggingface Dataset Download Script
+
+This script allows you to download and process Trustgen datasets from Hugging Face Hub, with options to download specific subsets or all available subsets.
+
+##### Basic Usage
+
+To run the script and download a specific subset:
+
+```bash
+python huggingface_dataset_download_example.py --subset ai_risk_llm
+```
+
+You can also download all available subsets by using `--subset all` or omitting the subset parameter (as "all" is the default).
+
+##### Setting the base_dir in Your Evaluation Script
+
+When running your evaluation script after downloading the dataset, make sure to set the `base_dir` parameter to point to the location where you downloaded the dataset:
+
+```python
+base_dir = os.path.abspath("./download_datasets/fairness_llm/")
+```
+
+This ensures your evaluation script can find the downloaded dataset files.
+
+##### Next Steps in the Pipeline
+
+1. If the dimension you're working with includes a `contextual_variator` step, proceed to that step next.
+2. Otherwise, you can skip directly to the `generate_responses` step.
+
+##### Troubleshooting
+
+If you encounter execution errors, it may be due to inconsistencies between the downloaded dataset filenames and the expected names in `file_config.json`. In such cases, simply rename the files manually to match the names specified in the configuration file.
 
 ## Trustworthiness Report
 
