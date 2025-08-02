@@ -10,6 +10,7 @@ MODEL_NAME_MAPPINGS:
   command-r-plus: command-r-plus-08-2024
   dalle3: dall-e-3
   deepseek-chat: deepseek-chat
+  Devstral-small: mistralai/Devstral-Small-2507
   flux-1.1-pro: flux-1.1-pro
   gemini-1.5-flash: gemini-1.5-flash
   gemini-1.5-pro: gemini-1.5-pro
@@ -18,6 +19,7 @@ MODEL_NAME_MAPPINGS:
   glm-4-plus: glm-4-plus
   glm-4v: glm-4v
   glm-4v-plus: glm-4v-plus
+  glm-4-32B: z-ai/glm-4-32b
   gpt-3.5-turbo: gpt-3.5-turbo
   gpt-4o: gpt-4o
   gpt-4o-mini: gpt-4o-mini
@@ -39,6 +41,7 @@ MODEL_NAME_MAPPINGS:
   playground-v2.5: playground-v2.5
   qwen-2-vl-72B: qwen-vl-max-0809
   qwen-2.5-72B: Qwen/Qwen2.5-72B-Instruct
+  qwen3-235B: Qwen/Qwen3-235B-A22B-Thinking-2507
   qwen-vl-max-0809: qwen-vl-max-0809
   qwq-32B: Qwen/QwQ-32B-Preview
   sd-3.5-large: sd-3.5-large
@@ -48,6 +51,12 @@ MODEL_NAME_MAPPINGS:
   FLUX.1-dev: FLUX.1-dev
   text-embedding-ada-002: text-embedding-ada-002
   yi-lightning: yi-lightning
+  hunyuan-a13b: tencent/hunyuan-a13b-instruct
+  ernie-4.5: baidu/ernie-4.5-300b-a47b
+  grok-3: x-ai/grok-3
+  grok-3-mini: x-ai/grok-3-mini
+  kimi-k2-instruct: moonshotai/Kimi-K2-Instruct
+  phi-4: microsoft/phi-4
 
 # API Keys Configuration (use environment variables)
 OPENAI:
@@ -58,7 +67,9 @@ local_openai_sdk_llms:
 openai_sdk_llms:
   Qwen/QwQ-32B-Preview: DEEPINFRA
   Qwen/Qwen2.5-72B-Instruct: DEEPINFRA
+  Qwen/Qwen3-235B-A22B-Thinking-2507: DEEPINFRA
   deepseek-chat: DEEPSEEK
+  mistralai/Devstral-Small-2507: DEEPINFRA
   glm-4: ZHIPU
   glm-4-plus: ZHIPU
   glm-4v: ZHIPU
@@ -78,11 +89,18 @@ openai_sdk_llms:
   mistralai/Mistral-7B-Instruct-v0.3: DEEPINFRA
   mistralai/Mixtral-8x22B-Instruct-v0.1: DEEPINFRA
   mistralai/Mixtral-8x7B-Instruct-v0.1: DEEPINFRA
+  moonshotai/Kimi-K2-Instruct: DEEPINFRA
+  microsoft/phi-4: DEEPINFRA
   o1: OPENAI
   o1-mini: OPENAI
   o1-preview: OPENAI
   qwen-vl-max-0809: QWEN
   qwen/qwen-2-vl-72b-instruct: OPENROUTER
+  z-ai/glm-4-32b: OPENROUTER
+  tencent/hunyuan-a13b-instruct: OPENROUTER
+  baidu/ernie-4.5-300b-a47b: OPENROUTER
+  x-ai/grok-3: OPENROUTER
+  x-ai/grok-3-mini: OPENROUTER
   text-embedding-ada-002: OPENAI
   yi-lightning: YI
 openai_sdk_vlms:
