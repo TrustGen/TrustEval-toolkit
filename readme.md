@@ -344,7 +344,6 @@ await generate_responses(
 
 Your `report.html` will be saved in the `base_dir` folder. For additional examples, check the `examples` folder.
 
-You're right, I missed the explanation about `base_dir`. Let me correct that part in the README:
 
 #### Using the Huggingface Dataset Download Script
 
