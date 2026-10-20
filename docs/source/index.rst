@@ -46,6 +46,7 @@ If you find `TrustEval` useful, please consider starring our GitHub repository!
 
    notes/contributing
    notes/faq
+   notes/acknowledgments
 
 
 .. About TrustEval
